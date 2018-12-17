@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WpfApp1
 {
@@ -13,5 +8,28 @@ namespace WpfApp1
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            var serviceCollection = new ServiceCollection()
+                .AddScoped<IUserControlViewModel, UserControlViewModel>()
+                .AddScoped<IMainWindowViewModel, MainWindowViewModel>()
+                .AddScoped<MainWindow>();
+
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+
+            var mainWindow = serviceProvider.GetService<MainWindow>();
+
+            var userControlViewModel = serviceProvider.GetService<IUserControlViewModel>();
+            userControlViewModel.TotalCount = 3;
+            userControlViewModel.PendingCount = 1;
+
+            var mainWindowViewModel = serviceProvider.GetService<IMainWindowViewModel>();
+            mainWindowViewModel.UserControlViewModel = userControlViewModel;
+
+            mainWindow.ViewModel = mainWindowViewModel;
+            mainWindow.Show();
+        }
     }
 }
