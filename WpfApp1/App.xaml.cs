@@ -22,10 +22,9 @@ namespace WpfApp1
             var mainWindow = serviceProvider.GetService<MainWindow>();
 
             var userControlViewModel = serviceProvider.GetService<IUserControlViewModel>();
-            userControlViewModel.Size = 250;
-            userControlViewModel.PendingCount = 10;
-            userControlViewModel.SuccessCount = 10;
-            userControlViewModel.ErrorCount = 10;
+            userControlViewModel.PendingCount = 1;
+            userControlViewModel.SuccessCount = 2;
+            userControlViewModel.ErrorCount = 4;
 
             var mainWindowViewModel = serviceProvider.GetService<IMainWindowViewModel>();
             mainWindowViewModel.UserControlViewModel = userControlViewModel;

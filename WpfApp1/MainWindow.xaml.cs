@@ -19,12 +19,38 @@ namespace WpfApp1
             this.WhenActivated(disposable =>
                 {
                     this.OneWayBind(ViewModel,
-                            model => model.UserControlViewModel,
-                            window => window.CircularDisplay.ViewModel)
+                            model => model.UserControlViewModel.ErrorCount,
+                            window => window.CircularDisplay.ErrorCount)
+                        .DisposeWith(disposable);
+
+                    this.OneWayBind(ViewModel,
+                            model => model.UserControlViewModel.SuccessCount,
+                            window => window.CircularDisplay.SuccessCount)
+                        .DisposeWith(disposable);
+
+                    this.OneWayBind(ViewModel,
+                            model => model.UserControlViewModel.PendingCount,
+                            window => window.CircularDisplay.PendingCount)
                         .DisposeWith(disposable);
                 }
             );
         }
+
+//        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+//        {
+//            base.OnRenderSizeChanged(sizeInfo);
+//            if (sizeInfo.WidthChanged)
+//            {
+//                var width = DisplayGrid.ActualWidth;
+//
+//                CircularDisplay.Width = width;
+//                CircularDisplay.Height = width;
+//
+//                var circularDisplayRadius = (width / 2) - 10;
+//                CircularDisplay.Radius = circularDisplayRadius;
+//                CircularDisplay.InnerRadius = circularDisplayRadius * 0.6;
+//            }
+//        }
 
         object IViewFor.ViewModel
         {

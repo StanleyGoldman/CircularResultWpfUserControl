@@ -5,10 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfApp1"
              mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="500">
-    <StackPanel Margin="10">
+             d:DesignHeight="250" d:DesignWidth="250">
         <Grid>
-            <Polygon Grid.Row="0" Grid.Column="0" Name="PendingPolygon" Width="250" Height="250" StrokeThickness="0" Fill="Yellow" Points="125,125 125,0 250,0 250,250 0,250 0,0 19.798055040567,0">
+            <Polygon Grid.Row="0" Grid.Column="0" Name="PendingPolygon" 
+                     Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                     Height="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                     StrokeThickness="0" Fill="Yellow" 
+                     Points="0,0 250,0 250,250 0,250">
                 <Polygon.Clip>
                     <CombinedGeometry GeometryCombineMode="Exclude">
                         <CombinedGeometry.Geometry1>
@@ -20,7 +23,11 @@
                     </CombinedGeometry>
                 </Polygon.Clip>
             </Polygon>
-            <Polygon Grid.Row="0" Grid.Column="0" Name="SuccessPolygon" Width="250" Height="250" StrokeThickness="0" Fill="Green" Points="125,125 125,0 250,0 250,250 0,250 0,0 19.798055040567,0">
+            <Polygon Grid.Row="0" Grid.Column="0" Name="SuccessPolygon"
+                     Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                     Height="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                     StrokeThickness="0" Fill="Green"
+                     Points="125,125 125,0 250,0 250,250 0,250 0,216.50635094611">
                 <Polygon.Clip>
                     <CombinedGeometry GeometryCombineMode="Exclude">
                         <CombinedGeometry.Geometry1>
@@ -32,7 +39,11 @@
                     </CombinedGeometry>
                 </Polygon.Clip>
             </Polygon>
-            <Polygon Grid.Row="0" Grid.Column="0" Name="ErrorPolygon" Width="250" Height="250" StrokeThickness="0" Fill="Red" Points="125,125 125,0 250,0 250,250 0,250 0,0 19.798055040567,0">
+            <Polygon Grid.Row="0" Grid.Column="0" Name="ErrorPolygon"
+                     Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                     Height="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                     StrokeThickness="0" Fill="Red" 
+                     Points="125,125 125,0 250,0 250,197.168783648703">
                 <Polygon.Clip>
                     <CombinedGeometry GeometryCombineMode="Exclude">
                         <CombinedGeometry.Geometry1>
@@ -45,29 +56,4 @@
                 </Polygon.Clip>
             </Polygon>
         </Grid>
-        <DockPanel Margin="0 10 0 0">
-            <Label>Error Points</Label>
-            <TextBox Name="ErrorPoints" Width="Auto" />
-        </DockPanel>
-        <DockPanel Margin="0 10 0 0">
-            <Label>Success Points</Label>
-            <TextBox Name="SuccessPoints" Width="Auto" />
-        </DockPanel>
-        <DockPanel Margin="0 10 0 0">
-            <Label>Pending Points</Label>
-            <TextBox Name="PendingPoints" Width="Auto" />
-        </DockPanel>
-        <DockPanel Margin="0 10 0 0">
-            <Label>Error Count</Label>
-            <TextBox Name="ErrorCount" Width="Auto" />
-        </DockPanel>
-        <DockPanel Margin="0 10 0 0">
-            <Label>Success Count</Label>
-            <TextBox Name="SuccessCount" Width="Auto" />
-        </DockPanel>
-        <DockPanel Margin="0 10 0 0">
-            <Label>Pending Count</Label>
-            <TextBox Name="PendingCount" Width="Auto" />
-        </DockPanel>
-    </StackPanel>
 </UserControl>
