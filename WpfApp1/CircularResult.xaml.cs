@@ -33,23 +33,50 @@ namespace WpfApp1
                 {
                     this.OneWayBind(ViewModel,
                             model => model.PendingPoints,
-                            window => window.PendingPolygonCount.Points)
+                            window => window.PendingPolygon.Points)
+                        .DisposeWith(disposable);
+
+                    this.OneWayBind(ViewModel,
+                            model => model.ErrorPoints,
+                            window => window.ErrorPolygon.Points)
+                        .DisposeWith(disposable);
+
+                    this.OneWayBind(ViewModel,
+                            model => model.SuccessPoints,
+                            window => window.SuccessPolygon.Points)
                         .DisposeWith(disposable);
 
                     this.OneWayBind(ViewModel,
                             model => model.PendingPoints,
-                            window => window.TextItem.Text,
+                            window => window.PendingPoints.Text,
+                            collection => collection.ToString())
+                        .DisposeWith(disposable);
+
+                    this.OneWayBind(ViewModel,
+                            model => model.ErrorPoints,
+                            window => window.ErrorPoints.Text,
+                            collection => collection.ToString())
+                        .DisposeWith(disposable);
+
+                    this.OneWayBind(ViewModel,
+                            model => model.SuccessPoints,
+                            window => window.SuccessPoints.Text,
                             collection => collection.ToString())
                         .DisposeWith(disposable);
 
                     this.Bind(ViewModel,
                             model => model.PendingCount,
-                            window => window.Pending.Text)
+                            window => window.PendingCount.Text)
                         .DisposeWith(disposable);
 
                     this.Bind(ViewModel,
-                            model => model.TotalCount,
-                            window => window.Total.Text)
+                            model => model.ErrorCount,
+                            window => window.ErrorCount.Text)
+                        .DisposeWith(disposable);
+
+                    this.Bind(ViewModel,
+                            model => model.SuccessCount,
+                            window => window.SuccessCount.Text)
                         .DisposeWith(disposable);
                 }
             );

@@ -7,9 +7,67 @@
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="500">
     <StackPanel Margin="10">
-        <Polygon Name="PendingPolygonCount" Width="250" Height="250" StrokeThickness="0" Fill="Yellow" Points="125,125 125,0 250,0 250,250 0,250 0,0 19.798055040567,0"></Polygon>
-        <TextBox Margin="0 10 0 0" Name="TextItem" />
-        <TextBox Margin="0 10 0 0" Name="Pending"/>
-        <TextBox Margin="0 10 0 0" Name="Total"/>
+        <Grid>
+            <Polygon Grid.Row="0" Grid.Column="0" Name="PendingPolygon" Width="250" Height="250" StrokeThickness="0" Fill="Yellow" Points="125,125 125,0 250,0 250,250 0,250 0,0 19.798055040567,0">
+                <Polygon.Clip>
+                    <CombinedGeometry GeometryCombineMode="Exclude">
+                        <CombinedGeometry.Geometry1>
+                            <EllipseGeometry Center="125 125" RadiusX="125" RadiusY="125" />
+                        </CombinedGeometry.Geometry1>
+                        <CombinedGeometry.Geometry2>
+                            <EllipseGeometry Center="125 125" RadiusX="100" RadiusY="100" />
+                        </CombinedGeometry.Geometry2>
+                    </CombinedGeometry>
+                </Polygon.Clip>
+            </Polygon>
+            <Polygon Grid.Row="0" Grid.Column="0" Name="SuccessPolygon" Width="250" Height="250" StrokeThickness="0" Fill="Green" Points="125,125 125,0 250,0 250,250 0,250 0,0 19.798055040567,0">
+                <Polygon.Clip>
+                    <CombinedGeometry GeometryCombineMode="Exclude">
+                        <CombinedGeometry.Geometry1>
+                            <EllipseGeometry Center="125 125" RadiusX="125" RadiusY="125" />
+                        </CombinedGeometry.Geometry1>
+                        <CombinedGeometry.Geometry2>
+                            <EllipseGeometry Center="125 125" RadiusX="100" RadiusY="100" />
+                        </CombinedGeometry.Geometry2>
+                    </CombinedGeometry>
+                </Polygon.Clip>
+            </Polygon>
+            <Polygon Grid.Row="0" Grid.Column="0" Name="ErrorPolygon" Width="250" Height="250" StrokeThickness="0" Fill="Red" Points="125,125 125,0 250,0 250,250 0,250 0,0 19.798055040567,0">
+                <Polygon.Clip>
+                    <CombinedGeometry GeometryCombineMode="Exclude">
+                        <CombinedGeometry.Geometry1>
+                            <EllipseGeometry Center="125 125" RadiusX="125" RadiusY="125" />
+                        </CombinedGeometry.Geometry1>
+                        <CombinedGeometry.Geometry2>
+                            <EllipseGeometry Center="125 125" RadiusX="100" RadiusY="100" />
+                        </CombinedGeometry.Geometry2>
+                    </CombinedGeometry>
+                </Polygon.Clip>
+            </Polygon>
+        </Grid>
+        <DockPanel Margin="0 10 0 0">
+            <Label>Error Points</Label>
+            <TextBox Name="ErrorPoints" Width="Auto" />
+        </DockPanel>
+        <DockPanel Margin="0 10 0 0">
+            <Label>Success Points</Label>
+            <TextBox Name="SuccessPoints" Width="Auto" />
+        </DockPanel>
+        <DockPanel Margin="0 10 0 0">
+            <Label>Pending Points</Label>
+            <TextBox Name="PendingPoints" Width="Auto" />
+        </DockPanel>
+        <DockPanel Margin="0 10 0 0">
+            <Label>Error Count</Label>
+            <TextBox Name="ErrorCount" Width="Auto" />
+        </DockPanel>
+        <DockPanel Margin="0 10 0 0">
+            <Label>Success Count</Label>
+            <TextBox Name="SuccessCount" Width="Auto" />
+        </DockPanel>
+        <DockPanel Margin="0 10 0 0">
+            <Label>Pending Count</Label>
+            <TextBox Name="PendingCount" Width="Auto" />
+        </DockPanel>
     </StackPanel>
 </UserControl>

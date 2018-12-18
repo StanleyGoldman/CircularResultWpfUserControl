@@ -6,19 +6,6 @@ using ReactiveUI;
 
 namespace WpfApp1
 {
-    public static class NumericExtensions
-    {
-        public static double ToRadians(this double val)
-        {
-            return (Math.PI / 180) * val;
-        }
-
-        public static double ToRadians(this float val)
-        {
-            return (Math.PI / 180) * val;
-        }
-    }
-
     public static class UserControlFunctions
     {
         public static IEnumerable<Point> GeneratePoints(double size, float percentage)
@@ -47,7 +34,7 @@ namespace WpfApp1
             if (adjustedDegrees >= 90 && adjustedDegrees < 135)
             {
                 var angleDegrees = adjustedDegrees - 90;
-                var angleRadians = angleDegrees.ToRadians();
+                var angleRadians = ToRadians(angleDegrees);
                 var tan = Math.Tan(angleRadians);
                 var oppositeEdge = tan * halfSize;
                 return new[] { origin, topMiddle, new Point(halfSize + oppositeEdge, 0) };
@@ -56,7 +43,7 @@ namespace WpfApp1
             if (adjustedDegrees >= 135 && adjustedDegrees < 180)
             {
                 var angleDegrees = adjustedDegrees - 135;
-                var angleRadians = angleDegrees.ToRadians();
+                var angleRadians = ToRadians(angleDegrees);
                 var tan = Math.Tan(angleRadians);
                 var oppositeEdge = tan * halfSize;
                 return new[] { origin, topMiddle, topRight, new Point(size, oppositeEdge) };
@@ -65,7 +52,7 @@ namespace WpfApp1
             if (adjustedDegrees >= 180 && adjustedDegrees < 225)
             {
                 var angleDegrees = adjustedDegrees - 180;
-                var angleRadians = angleDegrees.ToRadians();
+                var angleRadians = ToRadians(angleDegrees);
                 var tan = Math.Tan(angleRadians);
                 var oppositeEdge = tan * halfSize;
                 return new[] { origin, topMiddle, topRight, new Point(size, halfSize + oppositeEdge) };
@@ -74,7 +61,7 @@ namespace WpfApp1
             if (adjustedDegrees >= 225 && adjustedDegrees < 270)
             {
                 var angleDegrees = adjustedDegrees - 225;
-                var angleRadians = angleDegrees.ToRadians();
+                var angleRadians = ToRadians(angleDegrees);
                 var tan = Math.Tan(angleRadians);
                 var oppositeEdge = tan * halfSize;
                 return new[] { origin, topMiddle, topRight, bottomRight, new Point(size - oppositeEdge, size) };
@@ -83,7 +70,7 @@ namespace WpfApp1
             if (adjustedDegrees >= 270 && adjustedDegrees < 315)
             {
                 var angleDegrees = adjustedDegrees - 270;
-                var angleRadians = angleDegrees.ToRadians();
+                var angleRadians = ToRadians(angleDegrees);
                 var tan = Math.Tan(angleRadians);
                 var oppositeEdge = tan * halfSize;
                 return new[] { origin, topMiddle, topRight, bottomRight, new Point(halfSize - oppositeEdge, size) };
@@ -92,7 +79,7 @@ namespace WpfApp1
             if (adjustedDegrees >= 315 && adjustedDegrees < 360)
             {
                 var angleDegrees = adjustedDegrees - 315;
-                var angleRadians = angleDegrees.ToRadians();
+                var angleRadians = ToRadians(angleDegrees);
                 var tan = Math.Tan(angleRadians);
                 var oppositeEdge = tan * halfSize;
                 return new[] { origin, topMiddle, topRight, bottomRight, bottomLeft, new Point(0, size - oppositeEdge) };
@@ -101,7 +88,7 @@ namespace WpfApp1
             if (adjustedDegrees >= 0 && adjustedDegrees < 45)
             {
                 var angleDegrees = adjustedDegrees;
-                var angleRadians = angleDegrees.ToRadians();
+                var angleRadians = ToRadians(angleDegrees);
                 var tan = Math.Tan(angleRadians);
                 var oppositeEdge = tan * halfSize;
                 return new[] { origin, topMiddle, topRight, bottomRight, bottomLeft, new Point(0, halfSize - oppositeEdge) };
@@ -110,13 +97,18 @@ namespace WpfApp1
             if (adjustedDegrees >= 45 && adjustedDegrees < 90)
             {
                 var angleDegrees = adjustedDegrees - 45;
-                var angleRadians = angleDegrees.ToRadians();
+                var angleRadians = ToRadians(angleDegrees);
                 var tan = Math.Tan(angleRadians);
                 var oppositeEdge = tan * halfSize;
                 return new[] { origin, topMiddle, topRight, bottomRight, bottomLeft, topLeft, new Point(oppositeEdge, 0) };
             }
 
             return new Point[0];
+        }
+
+        public static double ToRadians(float val)
+        {
+            return (Math.PI / 180) * val;
         }
     }
 
@@ -133,7 +125,6 @@ namespace WpfApp1
 
     public class UserControlViewModel : ReactiveObject, IUserControlViewModel
     {
-        private int _totalCount;
         private int _errorCount;
         private int _pendingCount;
         private int _successCount;
@@ -141,10 +132,32 @@ namespace WpfApp1
 
         public UserControlViewModel()
         {
+            totalCount = this.WhenAnyValue(
+                    model => model.SuccessCount,
+                    model => model.ErrorCount,
+                    model => model.PendingCount,
+                    (successCount, errorCount, pendingCount) => successCount + errorCount + pendingCount)
+                .ToProperty(this, x => x.TotalCount);
+
+            errorPoints = this.WhenAnyValue(
+                    model => model.ErrorCount, 
+                    model => model.TotalCount, 
+                    (errorCount, totalCount) => CalculateMaskPoints((float)errorCount / totalCount))
+                .ToProperty(this, x => x.ErrorPoints);
+
+            successPoints = this.WhenAnyValue(
+                    model => model.SuccessCount, 
+                    model => model.ErrorCount, 
+                    model => model.TotalCount, 
+                    (successCount, errorCount, totalCount) => CalculateMaskPoints((float) (successCount + errorCount) / totalCount))
+                .ToProperty(this, x => x.SuccessPoints);
+
             pendingPoints = this.WhenAnyValue(
+                    model => model.SuccessCount, 
+                    model => model.ErrorCount, 
                     model => model.PendingCount, 
                     model => model.TotalCount, 
-                    (pendingCount, totalCount) => CalculateMaskPoints((float)pendingCount / totalCount))
+                    (successCount, errorCount, pendingCount, totalCount) => CalculateMaskPoints((float) (successCount + errorCount + pendingCount) / totalCount))
                 .ToProperty(this, x => x.PendingPoints);
         }
 
@@ -159,12 +172,6 @@ namespace WpfApp1
             {
                 return new PointCollection();
             }
-        }
-
-        public int TotalCount
-        {
-            get => _totalCount;
-            set => this.RaiseAndSetIfChanged(ref _totalCount, value);
         }
 
         public int ErrorCount
@@ -190,6 +197,15 @@ namespace WpfApp1
             get => _size;
             set => this.RaiseAndSetIfChanged(ref _size, value);
         }
+
+        readonly ObservableAsPropertyHelper<int> totalCount;
+        public int TotalCount => totalCount.Value;
+
+        readonly ObservableAsPropertyHelper<PointCollection> errorPoints;
+        public PointCollection ErrorPoints => errorPoints.Value;
+
+        readonly ObservableAsPropertyHelper<PointCollection> successPoints;
+        public PointCollection SuccessPoints => successPoints.Value;
 
         readonly ObservableAsPropertyHelper<PointCollection> pendingPoints;
         public PointCollection PendingPoints => pendingPoints.Value;
