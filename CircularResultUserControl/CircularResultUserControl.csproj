@@ -35,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>WpfApp1.App</StartupObject>
+    <StartupObject>CircularResultUserControl.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DynamicData, Version=6.7.0.2529, Culture=neutral, processorArchitecture=MSIL">
