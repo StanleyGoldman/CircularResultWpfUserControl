@@ -118,7 +118,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="IUserControlViewModel.cs" />
-    <Compile Include="SizeObserver.cs" />
     <Compile Include="UserControlViewModel.cs" />
     <Page Include="CircularResult.xaml">
       <SubType>Designer</SubType>
