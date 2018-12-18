@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace WpfApp1
+namespace CircularResultUserControl
 {
     /// <summary>
     /// Interaction logic for CircularResult.xaml

@@ -1,6 +1,4 @@
-﻿using System.Windows.Media;
-
-namespace WpfApp1
+﻿namespace CircularResultUserControl
 {
     public interface IMainWindowViewModel
     {

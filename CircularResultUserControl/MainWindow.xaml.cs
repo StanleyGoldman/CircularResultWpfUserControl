@@ -2,7 +2,7 @@
 using System.Windows;
 using ReactiveUI;
 
-namespace WpfApp1
+namespace CircularResultUserControl
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

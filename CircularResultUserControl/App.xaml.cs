@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace WpfApp1
+namespace CircularResultUserControl
 {
     /// <summary>
     /// Interaction logic for App.xaml

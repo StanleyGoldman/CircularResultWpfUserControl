@@ -1,8 +1,6 @@
-﻿using System;
-using System.Windows.Media;
-using ReactiveUI;
+﻿using ReactiveUI;
 
-namespace WpfApp1
+namespace CircularResultUserControl
 {
     public class MainWindowViewModel : ReactiveObject, IMainWindowViewModel
     {
