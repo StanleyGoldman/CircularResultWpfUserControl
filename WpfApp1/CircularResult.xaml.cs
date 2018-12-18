@@ -41,6 +41,16 @@ namespace WpfApp1
                             window => window.TextItem.Text,
                             collection => collection.ToString())
                         .DisposeWith(disposable);
+
+                    this.Bind(ViewModel,
+                            model => model.PendingCount,
+                            window => window.Pending.Text)
+                        .DisposeWith(disposable);
+
+                    this.Bind(ViewModel,
+                            model => model.TotalCount,
+                            window => window.Total.Text)
+                        .DisposeWith(disposable);
                 }
             );
         }

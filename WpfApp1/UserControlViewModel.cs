@@ -6,38 +6,117 @@ using ReactiveUI;
 
 namespace WpfApp1
 {
+    public static class NumericExtensions
+    {
+        public static double ToRadians(this double val)
+        {
+            return (Math.PI / 180) * val;
+        }
+
+        public static double ToRadians(this float val)
+        {
+            return (Math.PI / 180) * val;
+        }
+    }
+
     public static class UserControlFunctions
     {
-        public static IEnumerable<Point> GeneratePoints(double height, double width, float percentage)
+        public static IEnumerable<Point> GeneratePoints(double size, float percentage)
         {
             if (percentage < 0 || percentage > 1)
             {
                 throw new ArgumentException();
             }
 
-            var degrees = ((percentage / 360) + 90) % 360;
+            var halfSize = size / 2;
+            var origin = new Point(halfSize, halfSize);
+            var topMiddle = new Point(halfSize, 0);
+            var topRight = new Point(size, 0);
+            var bottomRight = new Point(size, size);
+            var bottomLeft = new Point(0, size);
+            var topLeft = new Point(0, 0);
 
-            if (degrees < 90)
+            if (percentage == 1)
             {
-                return new[] { new Point(25, 25), new Point(200, 100), new Point(200, 200), new Point(300, 30) };
+                return new[] { topLeft, topRight, bottomRight, bottomLeft};
             }
 
-            if (degrees >= 90 && degrees < 180)
+            var degrees = percentage * 360;
+            var adjustedDegrees = (degrees + 90) % 360;
+
+            if (adjustedDegrees >= 90 && adjustedDegrees < 135)
             {
-                return new[] { new Point(25, 25), new Point(200, 100), new Point(200, 200), new Point(300, 30) };
+                var angleDegrees = adjustedDegrees - 90;
+                var angleRadians = angleDegrees.ToRadians();
+                var tan = Math.Tan(angleRadians);
+                var oppositeEdge = tan * halfSize;
+                return new[] { origin, topMiddle, new Point(halfSize + oppositeEdge, 0) };
             }
 
-            if (degrees >= 180 && degrees < 270)
+            if (adjustedDegrees >= 135 && adjustedDegrees < 180)
             {
-                return new[] { new Point(25, 25), new Point(200, 100), new Point(200, 200), new Point(300, 30) };
+                var angleDegrees = adjustedDegrees - 135;
+                var angleRadians = angleDegrees.ToRadians();
+                var tan = Math.Tan(angleRadians);
+                var oppositeEdge = tan * halfSize;
+                return new[] { origin, topMiddle, topRight, new Point(size, oppositeEdge) };
             }
 
-            if (degrees >= 270 && degrees < 360)
+            if (adjustedDegrees >= 180 && adjustedDegrees < 225)
             {
-                return new[] { new Point(25, 25), new Point(200, 100), new Point(200, 200), new Point(300, 30) };
+                var angleDegrees = adjustedDegrees - 180;
+                var angleRadians = angleDegrees.ToRadians();
+                var tan = Math.Tan(angleRadians);
+                var oppositeEdge = tan * halfSize;
+                return new[] { origin, topMiddle, topRight, new Point(size, halfSize + oppositeEdge) };
             }
 
-            throw new InvalidOperationException();
+            if (adjustedDegrees >= 225 && adjustedDegrees < 270)
+            {
+                var angleDegrees = adjustedDegrees - 225;
+                var angleRadians = angleDegrees.ToRadians();
+                var tan = Math.Tan(angleRadians);
+                var oppositeEdge = tan * halfSize;
+                return new[] { origin, topMiddle, topRight, bottomRight, new Point(size - oppositeEdge, size) };
+            }
+
+            if (adjustedDegrees >= 270 && adjustedDegrees < 315)
+            {
+                var angleDegrees = adjustedDegrees - 270;
+                var angleRadians = angleDegrees.ToRadians();
+                var tan = Math.Tan(angleRadians);
+                var oppositeEdge = tan * halfSize;
+                return new[] { origin, topMiddle, topRight, bottomRight, new Point(halfSize - oppositeEdge, size) };
+            }
+
+            if (adjustedDegrees >= 315 && adjustedDegrees < 360)
+            {
+                var angleDegrees = adjustedDegrees - 315;
+                var angleRadians = angleDegrees.ToRadians();
+                var tan = Math.Tan(angleRadians);
+                var oppositeEdge = tan * halfSize;
+                return new[] { origin, topMiddle, topRight, bottomRight, bottomLeft, new Point(0, size - oppositeEdge) };
+            }
+
+            if (adjustedDegrees >= 0 && adjustedDegrees < 45)
+            {
+                var angleDegrees = adjustedDegrees;
+                var angleRadians = angleDegrees.ToRadians();
+                var tan = Math.Tan(angleRadians);
+                var oppositeEdge = tan * halfSize;
+                return new[] { origin, topMiddle, topRight, bottomRight, bottomLeft, new Point(0, halfSize - oppositeEdge) };
+            }
+
+            if (adjustedDegrees >= 45 && adjustedDegrees < 90)
+            {
+                var angleDegrees = adjustedDegrees - 45;
+                var angleRadians = angleDegrees.ToRadians();
+                var tan = Math.Tan(angleRadians);
+                var oppositeEdge = tan * halfSize;
+                return new[] { origin, topMiddle, topRight, bottomRight, bottomLeft, topLeft, new Point(oppositeEdge, 0) };
+            }
+
+            return new Point[0];
         }
     }
 
@@ -58,8 +137,7 @@ namespace WpfApp1
         private int _errorCount;
         private int _pendingCount;
         private int _successCount;
-        private double _height;
-        private double _width;
+        private double _size;
 
         public UserControlViewModel()
         {
@@ -74,7 +152,7 @@ namespace WpfApp1
         {
             try
             {
-                var generatePoints = UserControlFunctions.GeneratePoints(Height, Width, percentage);
+                var generatePoints = UserControlFunctions.GeneratePoints(Size, percentage);
                 return new PointCollection(generatePoints);
             }
             catch (Exception ex)
@@ -107,16 +185,10 @@ namespace WpfApp1
             set => this.RaiseAndSetIfChanged(ref _successCount, value);
         }
 
-        public double Height
+        public double Size
         {
-            get => _height;
-            set => this.RaiseAndSetIfChanged(ref _height, value);
-        }
-
-        public double Width
-        {
-            get => _width;
-            set => this.RaiseAndSetIfChanged(ref _width, value);
+            get => _size;
+            set => this.RaiseAndSetIfChanged(ref _size, value);
         }
 
         readonly ObservableAsPropertyHelper<PointCollection> pendingPoints;

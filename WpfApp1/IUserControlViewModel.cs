@@ -14,5 +14,6 @@ namespace WpfApp1
         int PendingCount { get; set; }
         int SuccessCount { get; set; }
         PointCollection PendingPoints { get; }
+        double Size { get; set; }
     }
 }
