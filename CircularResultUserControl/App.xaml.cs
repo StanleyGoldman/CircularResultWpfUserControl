@@ -22,7 +22,7 @@ namespace CircularResultUserControl
             var mainWindow = serviceProvider.GetService<MainWindow>();
 
             var userControlViewModel = serviceProvider.GetService<IUserControlViewModel>();
-            userControlViewModel.PendingCount = 1;
+            userControlViewModel.PendingCount = 3;
             userControlViewModel.SuccessCount = 2;
             userControlViewModel.ErrorCount = 4;
 

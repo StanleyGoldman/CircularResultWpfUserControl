@@ -10,7 +10,8 @@ namespace CircularResultUserControl
     public partial class MainWindow : Window, IViewFor<IMainWindowViewModel>
     {
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
-            "ViewModel", typeof(IMainWindowViewModel), typeof(MainWindow), new PropertyMetadata(null));
+            "ViewModel", typeof(IMainWindowViewModel), typeof(MainWindow),
+            new PropertyMetadata(null, (d, args) => ((MainWindow)d).ViewModel = (IMainWindowViewModel)args.NewValue));
 
         public MainWindow()
         {
@@ -35,22 +36,6 @@ namespace CircularResultUserControl
                 }
             );
         }
-
-//        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
-//        {
-//            base.OnRenderSizeChanged(sizeInfo);
-//            if (sizeInfo.WidthChanged)
-//            {
-//                var width = DisplayGrid.ActualWidth;
-//
-//                CircularDisplay.Width = width;
-//                CircularDisplay.Height = width;
-//
-//                var circularDisplayRadius = (width / 2) - 10;
-//                CircularDisplay.Radius = circularDisplayRadius;
-//                CircularDisplay.InnerRadius = circularDisplayRadius * 0.6;
-//            }
-//        }
 
         object IViewFor.ViewModel
         {

@@ -12,8 +12,8 @@
         <circularResultUserControl:CircularResult x:Name="CircularDisplay"
                               Height="150"
                               Width="150"
-                              Radius="75"
-                              InnerRadius="50" />
+                              Radius="50"
+                              InnerRadius="25" />
     </Grid>
 
 </Window>

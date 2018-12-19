@@ -12,34 +12,54 @@ namespace CircularResultUserControl
     public partial class CircularResult : UserControl
     {
         public static readonly DependencyProperty ErrorCountProperty = DependencyProperty.Register(
-            "ErrorCount", typeof(int), typeof(CircularResult), new PropertyMetadata(0));
+            "ErrorCount", typeof(int), typeof(CircularResult), 
+            new PropertyMetadata(0, (d, args) => ((CircularResult)d).ErrorCount = (int)args.NewValue));
 
         public static readonly DependencyProperty SuccessCountProperty = DependencyProperty.Register(
-            "SuccessCount", typeof(int), typeof(CircularResult), new PropertyMetadata(0));
+            "SuccessCount", typeof(int), typeof(CircularResult), 
+            new PropertyMetadata(0, (d, args) => ((CircularResult)d).SuccessCount = (int)args.NewValue));
 
         public static readonly DependencyProperty PendingCountProperty = DependencyProperty.Register(
-            "PendingCount", typeof(int), typeof(CircularResult), new PropertyMetadata(0));
+            "PendingCount", typeof(int), typeof(CircularResult), 
+            new PropertyMetadata(0, (d, args) => ((CircularResult)d).PendingCount = (int)args.NewValue));
 
         public static readonly DependencyProperty RadiusProperty = DependencyProperty.Register(
-            "Radius", typeof(double), typeof(CircularResult), new PropertyMetadata((double)250));
+            "Radius", typeof(double), typeof(CircularResult), 
+            new PropertyMetadata((double)250, (d, args) => ((CircularResult)d).Radius = (double)args.NewValue));
 
         public static readonly DependencyProperty InnerRadiusProperty = DependencyProperty.Register(
-            "InnerRadius", typeof(double), typeof(CircularResult), new PropertyMetadata((double)200));
+            "InnerRadius", typeof(double), typeof(CircularResult), 
+            new PropertyMetadata((double)200, (d, args) => ((CircularResult)d).InnerRadius = (double)args.NewValue));
 
-        public static IEnumerable<Point> GeneratePoints(double size, float percentage)
+        public IEnumerable<Point> GeneratePoints(float percentage)
         {
+            double ToRadians(float val)
+            {
+                return (Math.PI / 180) * val;
+            }
+
+            if (float.IsNaN(percentage))
+            {
+                return Array.Empty<Point>();
+            }
+
             if (percentage < 0 || percentage > 1)
             {
                 throw new ArgumentException();
             }
 
-            var halfSize = size / 2;
-            var origin = new Point(halfSize, halfSize);
-            var topMiddle = new Point(halfSize, 0);
-            var topRight = new Point(size, 0);
-            var bottomRight = new Point(size, size);
-            var bottomLeft = new Point(0, size);
-            var topLeft = new Point(0, 0);
+            var diameter = Diameter;
+
+            var leftEdge = XAdjust;
+            var rightEdge = diameter + XAdjust;
+            var topEdge = YAdjust;
+            var bottomEdge = diameter + YAdjust;
+
+            var topMiddle = new Point(Origin.X, topEdge);
+            var topRight = new Point(rightEdge, topEdge);
+            var bottomRight = new Point(rightEdge, bottomEdge);
+            var bottomLeft = new Point(leftEdge, bottomEdge);
+            var topLeft = new Point(leftEdge, topEdge);
 
             if (percentage == 1)
             {
@@ -54,8 +74,8 @@ namespace CircularResultUserControl
                 var angleDegrees = adjustedDegrees - 90;
                 var angleRadians = ToRadians(angleDegrees);
                 var tan = Math.Tan(angleRadians);
-                var oppositeEdge = tan * halfSize;
-                return new[] { origin, topMiddle, new Point(halfSize + oppositeEdge, 0) };
+                var oppositeEdge = tan * Radius;
+                return new[] { Origin, topMiddle, new Point(topMiddle.X + oppositeEdge, topMiddle.Y) };
             }
 
             if (adjustedDegrees >= 135 && adjustedDegrees < 180)
@@ -63,8 +83,8 @@ namespace CircularResultUserControl
                 var angleDegrees = adjustedDegrees - 135;
                 var angleRadians = ToRadians(angleDegrees);
                 var tan = Math.Tan(angleRadians);
-                var oppositeEdge = tan * halfSize;
-                return new[] { origin, topMiddle, topRight, new Point(size, oppositeEdge) };
+                var oppositeEdge = tan * Radius;
+                return new[] { Origin, topMiddle, topRight, new Point(topRight.X, topRight.Y + oppositeEdge) };
             }
 
             if (adjustedDegrees >= 180 && adjustedDegrees < 225)
@@ -72,8 +92,8 @@ namespace CircularResultUserControl
                 var angleDegrees = adjustedDegrees - 180;
                 var angleRadians = ToRadians(angleDegrees);
                 var tan = Math.Tan(angleRadians);
-                var oppositeEdge = tan * halfSize;
-                return new[] { origin, topMiddle, topRight, new Point(size, halfSize + oppositeEdge) };
+                var oppositeEdge = tan * Radius;
+                return new[] { Origin, topMiddle, topRight, new Point(topRight.X, topRight.Y + Radius + oppositeEdge) };
             }
 
             if (adjustedDegrees >= 225 && adjustedDegrees < 270)
@@ -81,8 +101,8 @@ namespace CircularResultUserControl
                 var angleDegrees = adjustedDegrees - 225;
                 var angleRadians = ToRadians(angleDegrees);
                 var tan = Math.Tan(angleRadians);
-                var oppositeEdge = tan * halfSize;
-                return new[] { origin, topMiddle, topRight, bottomRight, new Point(size - oppositeEdge, size) };
+                var oppositeEdge = tan * Radius;
+                return new[] { Origin, topMiddle, topRight, bottomRight, new Point(bottomRight.X - oppositeEdge, bottomRight.Y) };
             }
 
             if (adjustedDegrees >= 270 && adjustedDegrees < 315)
@@ -90,8 +110,8 @@ namespace CircularResultUserControl
                 var angleDegrees = adjustedDegrees - 270;
                 var angleRadians = ToRadians(angleDegrees);
                 var tan = Math.Tan(angleRadians);
-                var oppositeEdge = tan * halfSize;
-                return new[] { origin, topMiddle, topRight, bottomRight, new Point(halfSize - oppositeEdge, size) };
+                var oppositeEdge = tan * Radius;
+                return new[] { Origin, topMiddle, topRight, bottomRight, new Point(bottomRight.X - Radius - oppositeEdge, bottomRight.Y) };
             }
 
             if (adjustedDegrees >= 315 && adjustedDegrees < 360)
@@ -99,8 +119,8 @@ namespace CircularResultUserControl
                 var angleDegrees = adjustedDegrees - 315;
                 var angleRadians = ToRadians(angleDegrees);
                 var tan = Math.Tan(angleRadians);
-                var oppositeEdge = tan * halfSize;
-                return new[] { origin, topMiddle, topRight, bottomRight, bottomLeft, new Point(0, size - oppositeEdge) };
+                var oppositeEdge = tan * Radius;
+                return new[] { Origin, topMiddle, topRight, bottomRight, bottomLeft, new Point(bottomLeft.X, bottomLeft.Y - oppositeEdge) };
             }
 
             if (adjustedDegrees >= 0 && adjustedDegrees < 45)
@@ -108,8 +128,8 @@ namespace CircularResultUserControl
                 var angleDegrees = adjustedDegrees;
                 var angleRadians = ToRadians(angleDegrees);
                 var tan = Math.Tan(angleRadians);
-                var oppositeEdge = tan * halfSize;
-                return new[] { origin, topMiddle, topRight, bottomRight, bottomLeft, new Point(0, halfSize - oppositeEdge) };
+                var oppositeEdge = tan * Radius;
+                return new[] { Origin, topMiddle, topRight, bottomRight, bottomLeft, new Point(bottomLeft.X, bottomLeft.Y - Radius - oppositeEdge) };
             }
 
             if (adjustedDegrees >= 45 && adjustedDegrees < 90)
@@ -117,47 +137,48 @@ namespace CircularResultUserControl
                 var angleDegrees = adjustedDegrees - 45;
                 var angleRadians = ToRadians(angleDegrees);
                 var tan = Math.Tan(angleRadians);
-                var oppositeEdge = tan * halfSize;
-                return new[] { origin, topMiddle, topRight, bottomRight, bottomLeft, topLeft, new Point(oppositeEdge, 0) };
+                var oppositeEdge = tan * Radius;
+                return new[] { Origin, topMiddle, topRight, bottomRight, bottomLeft, topLeft, new Point(topLeft.X + oppositeEdge, topLeft.Y) };
             }
 
-            return new Point[0];
-        }
-
-        public static double ToRadians(float val)
-        {
-            return (Math.PI / 180) * val;
+            throw new InvalidOperationException();
         }
 
         public CircularResult()
         {
             InitializeComponent();
             GeneratePolygons();
-            ComputeMask();
+            GenerateMask();
         }
 
         private void GeneratePolygons()
         {
-            ErrorPolygon.Points = new PointCollection(GeneratePoints(Radius * 2, (float)ErrorCount / TotalCount));
-            SuccessPolygon.Points = new PointCollection(GeneratePoints(Radius * 2, (float)(SuccessCount + ErrorCount) / TotalCount));
-            PendingPolygon.Points = new PointCollection(GeneratePoints(Radius * 2, (float)(SuccessCount + ErrorCount + PendingCount) / TotalCount));
+            ErrorPolygon.Points = new PointCollection(GeneratePoints((float)ErrorCount / TotalCount));
+            SuccessPolygon.Points = new PointCollection(GeneratePoints((float)(SuccessCount + ErrorCount) / TotalCount));
+            PendingPolygon.Points = new PointCollection(GeneratePoints((float)(SuccessCount + ErrorCount + PendingCount) / TotalCount));
         }
 
-        private void ComputeMask()
+        private void GenerateMask()
         {
             var pendingPolygonClip = new CombinedGeometry(
                 GeometryCombineMode.Exclude,
-                new EllipseGeometry(Center, Radius, Radius),
-                new EllipseGeometry(Center, InnerRadius, InnerRadius));
+                new EllipseGeometry(Origin, Radius, Radius),
+                new EllipseGeometry(Origin, InnerRadius, InnerRadius));
 
             PendingPolygon.Clip = pendingPolygonClip;
             SuccessPolygon.Clip = pendingPolygonClip;
             ErrorPolygon.Clip = pendingPolygonClip;
         }
 
-        private int TotalCount => ErrorCount + SuccessCount + PendingCount;
+        private Point Origin => new Point(Radius + XAdjust, Radius + YAdjust);
 
-        private Point Center => new Point(Radius, Radius);
+        private double Diameter => Radius * 2;
+
+        private double XAdjust => (ActualWidth - Diameter) / 2;
+
+        private double YAdjust => (ActualHeight - Diameter) / 2;
+
+        private int TotalCount => ErrorCount + SuccessCount + PendingCount;
 
         public int ErrorCount
         {
@@ -165,7 +186,6 @@ namespace CircularResultUserControl
             set
             {
                 SetValue(ErrorCountProperty, value);
-                ComputeMask();
                 GeneratePolygons();
             }
         }
@@ -176,7 +196,6 @@ namespace CircularResultUserControl
             set
             {
                 SetValue(SuccessCountProperty, value);
-                ComputeMask();
                 GeneratePolygons();
             }
         }
@@ -187,7 +206,6 @@ namespace CircularResultUserControl
             set
             {
                 SetValue(PendingCountProperty, value);
-                ComputeMask();
                 GeneratePolygons();
             }
         }
@@ -198,7 +216,7 @@ namespace CircularResultUserControl
             set
             {
                 SetValue(RadiusProperty, value);
-                ComputeMask();
+                GenerateMask();
                 GeneratePolygons();
             }
         }
@@ -209,7 +227,17 @@ namespace CircularResultUserControl
             set
             {
                 SetValue(InnerRadiusProperty, value);
-                ComputeMask();
+                GenerateMask();
+                GeneratePolygons();
+            }
+        }
+
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+            if (sizeInfo.WidthChanged || sizeInfo.HeightChanged)
+            {
+                GenerateMask();
                 GeneratePolygons();
             }
         }
